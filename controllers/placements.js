@@ -72,11 +72,11 @@ export const createPlacement = async (req, res) => {
 
         // Perform placement for each student
         const placements = students.map((student) => {
-            const prevPlacements = student.placementLocations || [];
+            const prevPlacements = student.placementLocationsHistory || [];
             // filter available locations for current student
             const availableLocations = placementLocations.filter((location) =>
                 prevPlacements.indexOf(location._id) === -1);
-
+            
             // If no locations available to place student, return null for placementLocation
             // This needs to be fixed by the user in UI
             if (!availableLocations.length) {

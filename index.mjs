@@ -7,6 +7,8 @@ import fs from "fs";
 import admin from "firebase-admin";
 import indexRouter from "./routes/index.js";
 import { connectToDB } from "./utils.js";
+import session from "express-session";
+import cookieParser from "cookie-parser";
 
 const serviceAccount = JSON.parse(fs.readFileSync("nursing-project-66060-firebase-adminsdk-zvv2q-1e64e650f8.json"));
 
@@ -90,6 +92,14 @@ dotenv.config();
 const app = express();
 app.use(bodyParser.json());
 app.use(cors());
+
+app.use(cookieParser());
+ 
+app.use(session({
+    secret: "drthrthvfr",
+    saveUninitialized: true,
+    resave: true
+}));
 
 app.use("/api", indexRouter);
 
