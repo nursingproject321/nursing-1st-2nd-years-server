@@ -9,6 +9,9 @@ import indexRouter from "./routes/index.js";
 import { connectToDB } from "./utils.js";
 import session from "express-session";
 import cookieParser from "cookie-parser";
+import mongoose from "mongoose";
+
+mongoose.set('strictQuery', false);
 
 const serviceAccount = JSON.parse(fs.readFileSync("nursing-project-66060-firebase-adminsdk-zvv2q-1e64e650f8.json"));
 
@@ -106,7 +109,7 @@ app.use("/api", indexRouter);
 (async function init() {
     try {
         await connectToDB();
-        app.listen(PORT, () => console.log("Express is listening at mongodb+srv://kzstar:root@cluster0.vowlw1a.mongodb.net/test"));
+        app.listen(PORT, () => console.log("Express is listening at port", PORT));
         // app.listen(PORT, () => console.log(`Express is listening at mongodb+srv://kzstar:Karan123@cluster0.vowlw1a.mongodb.net/?retryWrites=true&w=majority`));
         // app.listen(PORT, () => console.log(`Express is listening at http://localhost:${PORT}`));
     } catch (err) {

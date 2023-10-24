@@ -52,7 +52,11 @@ export const createPlacement = async (req, res) => {
         const {
             term, year, locations, name
         } = req.body;
-
+        const placement_exists = await Placement.findOne({term, year});
+        
+        if(placement_exists){
+            throw new Error(`Placement for the ${term} term, year ${year} already exists.`);
+        }
         const students = await Student.find({ term, year }).sort({ fname: -1 });
 
         const studentIds = students.map((student) => student._id);
