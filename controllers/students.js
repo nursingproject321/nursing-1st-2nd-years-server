@@ -117,6 +117,9 @@ export const updateStudent = async (req, res) => {
         if (!mongoose.Types.ObjectId.isValid(params.id)) return res.status(404).json({ message: `No entry found with id: ${params.id}` });
 
         const studentrec = await Student.findByIdAndUpdate(params.id, body, { new: true });
+        if(!studentrec){
+            throw new Error("Student not found");    
+        }
         // await Student.populate(studentrec, { path: "school" });
         return res.status(200).json(studentrec);
     } catch (err) {

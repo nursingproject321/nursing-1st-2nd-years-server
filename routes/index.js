@@ -23,8 +23,6 @@ router.use("/locations", auth, LocationRoutes);
 
 router.use("/students", auth, StudentRoutes);
 
-router.use("/students", auth, StudentRoutes);
-
 router.use("/placements", auth, PlacementRoutes);
 
 export default router;
