@@ -69,7 +69,7 @@ export const getStudentPlacements = async (req, res) => {
 export const addStudent = async (req, res) => {
     try {
         const params = req.body;
-        const studentModel = await Student.findOne({ studentId: student.studentId });
+        const studentModel = await Student.findOne({ studentId: params.studentId });
 
         if (studentModel) {
             throw new Error("Student ID already exists");
