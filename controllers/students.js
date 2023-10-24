@@ -24,12 +24,12 @@ export const getStudents = async (req, res) => {
 
         const totalCount = await Student.find(findParams).count();
 
-        res.status(200).json({
+        return res.status(200).json({
             data: Studentrec,
             totalCount
         });
     } catch (err) {
-        res.status(400).json({ message: err.message });
+        return res.status(400).json({ message: err.message });
     }
 };
 
@@ -46,9 +46,9 @@ export const getStudent = async (req, res) => {
             .populate("placementsHistory");
         // .populate("school");
 
-        res.status(200).json(Studentrec);
+        return res.status(200).json(Studentrec);
     } catch (err) {
-        res.status(400).json({ message: err.message });
+        return res.status(400).json({ message: err.message });
     }
 };
 
@@ -60,21 +60,27 @@ export const getStudentPlacements = async (req, res) => {
             .populate("placementLocationsHistory")
             .populate("placementsHistory");
 
-        res.status(200).json(Studentrec);
+        return res.status(200).json(Studentrec);
     } catch (err) {
-        res.status(400).json({ message: err.message });
+        return res.status(400).json({ message: err.message });
     }
 };
 
 export const addStudent = async (req, res) => {
     try {
         const params = req.body;
+        const studentModel = await Student.findOne({ studentId: student.studentId });
+
+        if (studentModel) {
+            throw new Error("Student ID already exists");
+        }
+
         const student = new Student(params);
         await student.save();
         // await Student.populate(student, { path: "school" });
-        res.status(201).json(student);
+        return res.status(201).json(student);
     } catch (err) {
-        res.status(400).json({ message: err.message });
+        return res.status(400).json({ message: err.message });
     }
 };
 
@@ -98,9 +104,9 @@ export const importStudents = async (req, res) => {
                 return null;
             }
         }));
-        res.json({ message: " Imported successfully.", failed });
+        return res.json({ message: " Imported successfully.", failed });
     } catch (err) {
-        res.status(400).json({ message: err.message });
+        return res.status(400).json({ message: err.message });
     }
 };
 
@@ -112,9 +118,9 @@ export const updateStudent = async (req, res) => {
 
         const studentrec = await Student.findByIdAndUpdate(params.id, body, { new: true });
         // await Student.populate(studentrec, { path: "school" });
-        res.status(200).json(studentrec);
+        return res.status(200).json(studentrec);
     } catch (err) {
-        res.status(400).json({ message: err.message });
+        return res.status(400).json({ message: err.message });
     }
 };
 
@@ -122,9 +128,9 @@ export const deleteStudent = async (req, res) => {
     try {
         const { id } = req.params;
         await Student.findByIdAndDelete(id);
-        res.status(200).json({ message: "Successfully deleted" });
+        return res.status(200).json({ message: "Successfully deleted" });
     } catch (err) {
-        res.status(400).json({ message: err.message });
+        return res.status(400).json({ message: err.message });
     }
 };
 
@@ -132,8 +138,8 @@ export const deleteStudents = async (req, res) => {
     const { body } = req;
     try {
         await Student.deleteMany({ _id: { $in: body } });
-        res.json({ message: "Student record deleted successfully." });
+        return res.json({ message: "Student record deleted successfully." });
     } catch (err) {
-        res.status(400).json({ message: err.message });
+        return res.status(400).json({ message: err.message });
     }
 };
