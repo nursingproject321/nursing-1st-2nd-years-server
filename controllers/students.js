@@ -4,7 +4,7 @@ import Student from "../models/students.js";
 export const getStudents = async (req, res) => {
     try {
         const {
-            index, limit, term, year
+            start, limit, term, year
         } = req.query;
 
         const findParams = {};
@@ -19,7 +19,7 @@ export const getStudents = async (req, res) => {
         const Studentrec = await Student.find(findParams)
             .sort({ createdAt: -1 })
             .limit(limit)
-            .skip(index);
+            .skip(start);
             // .populate("school");
 
         const totalCount = await Student.find(findParams).count();
