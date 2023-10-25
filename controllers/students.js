@@ -4,16 +4,18 @@ import Student from "../models/students.js";
 export const getStudents = async (req, res) => {
     try {
         const {
-            start, limit, term, year
+            start, limit, term, year, study_year
         } = req.query;
 
         const findParams = {};
         if (term) {
             findParams.term = term;
         }
-
         if (year) {
             findParams.year = year;
+        }
+        if (study_year) {
+            findParams.study_year = study_year;
         }
 
         const Studentrec = await Student.find(findParams)
