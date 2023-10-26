@@ -50,17 +50,16 @@ export const getPlacement = async (req, res) => {
 export const createPlacement = async (req, res) => {
     try {
         const {
-            term, year, locations, name
+            term, year, locations, name, study_year
         } = req.body;
-        const placement_exists = await Placement.findOne({term, year});
+        const placement_exists = await Placement.findOne({term, year, study_year});
         
         if(placement_exists){
-            throw new Error(`Placement for the ${term} term, year ${year} already exists`);
+            throw new Error(`Placement for the ${term} term, year ${year}, study_year ${study_year} already exists`);
         }
-        const students = await Student.find({ term, year }).sort({ fname: -1 });
-
-        if(!studnets){
-            throw new Error(`No students in the ${term} term, year ${year}`);
+        const students = await Student.find({study_year, year, term}).sort({ studentId: -1 });
+        if(!students || students.length == 0){
+            throw new Error(`No students in the ${term} term, year ${year}, study_year ${study_year}`);
         }
 
         const studentIds = students.map((student) => student._id);
@@ -129,7 +128,7 @@ export const createPlacement = async (req, res) => {
         }, {});
 
         const placement = await Placement.create({
-            name, year, term, students: studentIds, placementLocations: locations, placements
+            name, study_year, year, term, students: studentIds, placementLocations: locations, placements
         });
         res.status(201).json(placement);
     } catch (err) {
