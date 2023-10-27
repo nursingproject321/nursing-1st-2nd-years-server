@@ -126,6 +126,7 @@ export const createPlacement = async (req, res) => {
                 placementLocationId: null
             };
         }, {});
+        // create a name for the placement
         let study_year_suffix;
         if(study_year == 1){
             study_year_suffix = "st year ";
