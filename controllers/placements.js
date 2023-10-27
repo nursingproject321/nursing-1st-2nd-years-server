@@ -50,7 +50,7 @@ export const getPlacement = async (req, res) => {
 export const createPlacement = async (req, res) => {
     try {
         const {
-            term, year, locations, name, study_year
+            term, year, locations, study_year
         } = req.body;
         const placement_exists = await Placement.findOne({term, year, study_year});
         
@@ -126,7 +126,15 @@ export const createPlacement = async (req, res) => {
                 placementLocationId: null
             };
         }, {});
-
+        let study_year_suffix;
+        if(study_year == 1){
+            study_year_suffix = "st year ";
+        }else if(study_year == 2){
+            study_year_suffix = "nd year ";
+        }else{
+            study_year_suffix = "rd year ";
+        }
+        let name = String(study_year) + study_year_suffix + String(term) + "-" + String(year);
         const placement = await Placement.create({
             name, study_year, year, term, students: studentIds, placementLocations: locations, placements
         });
