@@ -12,6 +12,8 @@ const StudentsSchema = new Schema({
     year: { type: Number, required: true },
     term: { type: String, required: true },
     study_year: { type: Number, required: true, default: 1 },
+    joined_year: { type: Number, required: true },
+    joined_term: { type: String, required: true },
     notes: { type: String, default: "" },
     placementLocationsHistory: [{ type: Schema.Types.ObjectId, ref: "PlacementLocation" }],
     placementsHistory: [{ type: Schema.Types.ObjectId, ref: "Placement" }]

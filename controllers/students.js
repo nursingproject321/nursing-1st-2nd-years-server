@@ -76,7 +76,8 @@ export const addStudent = async (req, res) => {
         if (studentModel) {
             throw new Error("Student ID already exists");
         }
-
+        params.joined_term = params.term;
+        params.joined_year = params.year;
         const student = new Student(params);
         await student.save();
         // await Student.populate(student, { path: "school" });
@@ -145,6 +146,51 @@ export const deleteStudents = async (req, res) => {
         await Student.deleteMany({ _id: { $in: body } });
         return res.json({ message: "Student record deleted successfully." });
     } catch (err) {
+        return res.status(400).json({ message: err.message });
+    }
+};
+
+// Move students to next term
+export const moveStudents = async (req, res) => {
+    try{
+        const {year, term, study_year} = req.body;
+        if(study_year>3){
+            throw new Error("Requested students should be from 1st, 2nd and 3rd year");
+        }
+        if(!year || !term || !study_year){
+            throw new Error("Invalid data provided!");
+        }
+        const terms_list = {0: "Winter", 1: "Inter Summer", 2: "Fall"};
+        // moving to next term
+        let new_term, new_study_year=study_year;
+        let new_year = new Date().getFullYear();
+        // set new term
+        if(term == "Winter"){
+            new_term = terms_list[1]; 
+        }else if(term == "Inter Summer"){
+            new_term = terms_list[2]
+        }else{
+            new_term = terms_list[0]
+        }
+        // get studenets
+        const students_lst = await Student.find({term, year, study_year});
+        if(!students_lst || students_lst.length == 0){
+            throw new Error("No students found for the requested term");
+        }
+        students_lst.forEach(async (student_doc) =>{
+            // set new study_year like 2nd or 3rd year
+            if(student_doc.joined_term == new_term){
+                new_study_year = study_year+1;
+            }
+            student_doc.study_year = new_study_year;
+            student_doc.term = new_term;
+            student_doc.year = new_year;
+            await student_doc.save();
+        });
+        return res.status(200).json({
+            message: `Students moved from ${year}-${term} term to ${new_year}-${new_term} term`
+        });
+    }catch(err){
         return res.status(400).json({ message: err.message });
     }
 };
