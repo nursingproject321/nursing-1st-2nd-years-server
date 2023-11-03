@@ -116,6 +116,13 @@ export const importStudents = async (req, res) => {
 export const updateStudent = async (req, res) => {
     try {
         const { body, params } = req;
+        // This can be used to update the joined term and year
+        // if(params.term){
+        //     params.joined_term = params.term;
+        // }
+        // if(params.year){
+        //     params.joined_year = params.joined_year
+        // }
 
         if (!mongoose.Types.ObjectId.isValid(params.id)) return res.status(404).json({ message: `No entry found with id: ${params.id}` });
 
@@ -153,42 +160,49 @@ export const deleteStudents = async (req, res) => {
 // Move students to next term
 export const moveStudents = async (req, res) => {
     try{
-        const {year, term, study_year} = req.body;
-        if(study_year>3){
-            throw new Error("Requested students should be from 1st, 2nd and 3rd year");
-        }
-        if(!year || !term || !study_year){
-            throw new Error("Invalid data provided!");
-        }
+        // const {year, term, study_year} = req.body;
         const terms_list = {0: "Winter", 1: "Inter Summer", 2: "Fall"};
         // moving to next term
-        let new_term, new_study_year=study_year;
+        let new_term, new_study_year, current_term, current_study_year;
         let new_year = new Date().getFullYear();
-        // set new term
-        if(term == "Winter"){
-            new_term = terms_list[1]; 
-        }else if(term == "Inter Summer"){
-            new_term = terms_list[2]
-        }else{
-            new_term = terms_list[0]
-        }
-        // get studenets
-        const students_lst = await Student.find({term, year, study_year});
+        // get students
+        const students_lst = await Student.find({"study_year": {$lt: 4}});
         if(!students_lst || students_lst.length == 0){
-            throw new Error("No students found for the requested term");
+            throw new Error("No students found");
         }
         students_lst.forEach(async (student_doc) =>{
+            // set new term
+            current_term = student_doc.term;
+            current_study_year = student_doc.study_year;
+            if(current_term == "Winter"){
+                new_term = terms_list[1];
+            }else if(current_term == "Inter Summer"){
+                new_term = terms_list[2];
+            }else{
+                new_term = terms_list[0];
+            }
             // set new study_year like 2nd or 3rd year
+            new_study_year = current_study_year;
             if(student_doc.joined_term == new_term){
-                new_study_year = study_year+1;
+                new_study_year++;
             }
             student_doc.study_year = new_study_year;
             student_doc.term = new_term;
             student_doc.year = new_year;
+
+            // // For Testing
+            // student_doc.study_year=1;
+            // student_doc.year=2023;
+            // student_doc.term="Fall";
+            // student_doc.joined_year=2023;
+            // student_doc.joined_term="Fall";
+            // student_doc.placementLocationsHistory=[];
+            // student_doc.placementsHistory=[];
+
             await student_doc.save();
         });
         return res.status(200).json({
-            message: `Students moved from ${year}-${term} term to ${new_year}-${new_term} term`
+            message: `Students moved to the next term`
         });
     }catch(err){
         return res.status(400).json({ message: err.message });
