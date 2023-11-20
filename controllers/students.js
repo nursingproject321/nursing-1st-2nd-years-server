@@ -190,7 +190,7 @@ export const moveStudents = async (req, res) => {
             student_doc.term = new_term;
             student_doc.year = new_year;
 
-            // // For Testing
+            // For Testing
             // student_doc.study_year=1;
             // student_doc.year=2023;
             // student_doc.term="Fall";
