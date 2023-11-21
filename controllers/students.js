@@ -92,8 +92,8 @@ export const importStudents = async (req, res) => {
         const failed = [];
         await Promise.all((req.body || []).map(async (student) => {
             try {
+                student.year = new Date().getFullYear();
                 const studentModel = await Student.findOne({ studentId: student.studentId });
-
                 if (studentModel) {
                     throw new Error("Student ID already exists");
                 } else {
