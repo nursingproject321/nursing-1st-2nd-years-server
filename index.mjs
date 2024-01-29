@@ -11,13 +11,17 @@ import session from "express-session";
 import cookieParser from "cookie-parser";
 import mongoose from "mongoose";
 
-mongoose.set('strictQuery', false);
+mongoose.set("strictQuery", false);
 
-const serviceAccount = JSON.parse(fs.readFileSync("nursing-project-66060-firebase-adminsdk-zvv2q-1e64e650f8.json"));
+const serviceAccount = JSON.parse(
+  fs.readFileSync(
+    "nursing-project-66060-firebase-adminsdk-zvv2q-1e64e650f8.json"
+  )
+);
 
 admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount)
-    // Add other Firebase configuration options here if needed
+  credential: admin.credential.cert(serviceAccount),
+  // Add other Firebase configuration options here if needed
 });
 // const express = require('express');
 // const passport = require('passport');
@@ -94,23 +98,30 @@ dotenv.config();
 
 const app = express();
 app.use(bodyParser.json());
-app.use(cors({ origin: 'http://localhost:3000',"https://stirring-vacherin-df2c62.netlify.app"}));
+const corsOptions = {
+  origin: "*",
+  credentials: true,
+  optionSuccessStatus: 200,
+};
+app.use(cors(corsOptions));
 
 app.use(cookieParser());
- 
-app.use(session({
+
+app.use(
+  session({
     secret: "drthrthvfr",
     saveUninitialized: true,
-    resave: true
-}));
+    resave: true,
+  })
+);
 
 app.use("/api", indexRouter);
 
 (async function init() {
-    try {
-        await connectToDB();
-        app.listen(PORT, () => console.log("Express is listening at port", PORT));
-        } catch (err) {
-        console.warn(err);
-    }
-}());
+  try {
+    await connectToDB();
+    app.listen(PORT, () => console.log("Express is listening at port", PORT));
+  } catch (err) {
+    console.warn(err);
+  }
+})();
