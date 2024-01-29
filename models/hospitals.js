@@ -1,10 +1,13 @@
 import mongoose from "mongoose";
 
-const HospitalSchema = new mongoose.Schema({
+const HospitalSchema = new mongoose.Schema(
+  {
     name: { type: String, required: true, trim: true },
     campus: { type: String, required: true, trim: true },
-    address: { type: String, required: true, trim: true }
-}, { timestamps: true });
+    address: { type: String, required: false, trim: true },
+  },
+  { timestamps: true }
+);
 
 const Hospital = mongoose.model("Hospital", HospitalSchema);
 

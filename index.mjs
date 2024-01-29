@@ -94,7 +94,7 @@ dotenv.config();
 
 const app = express();
 app.use(bodyParser.json());
-app.use(cors({ origin: 'http://localhost:3000'}));
+app.use(cors({ origin: 'http://localhost:3000',"https://brainy-gown-foal.cyclic.cloud"}));
 
 app.use(cookieParser());
  
