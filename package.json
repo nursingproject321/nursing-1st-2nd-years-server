@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "nodemon index.js",
-    "start": "node --experimental-modules index.mjs"
+    "start": "nodemon --experimental-modules index.mjs"
   },
   "keywords": [],
   "author": "",

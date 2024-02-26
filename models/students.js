@@ -2,7 +2,8 @@ import mongoose from "mongoose";
 
 const { Schema } = mongoose;
 
-const StudentsSchema = new Schema({
+const StudentsSchema = new Schema(
+  {
     studentId: { type: Number, required: true },
     fname: { type: String, required: true, trim: true },
     lname: { type: String, required: true, trim: true },
@@ -15,9 +16,14 @@ const StudentsSchema = new Schema({
     joined_year: { type: Number, required: true },
     joined_term: { type: String, required: true },
     notes: { type: String, default: "" },
-    placementLocationsHistory: [{ type: Schema.Types.ObjectId, ref: "PlacementLocation" }],
-    placementsHistory: [{ type: Schema.Types.ObjectId, ref: "Placement" }]
-}, { timestamps: true });
+    placementLocationsHistory: [
+      { type: Schema.Types.ObjectId, ref: "PlacementLocation" },
+    ],
+    placementsHistory: [{ type: Schema.Types.ObjectId, ref: "Placement" }],
+    isFlagged: { type: Boolean, required: true, default: false },
+  },
+  { timestamps: true }
+);
 
 const Student = mongoose.model("Student", StudentsSchema);
 

@@ -62,7 +62,7 @@ export const createPlacement = async (req, res) => {
         `Placement for the ${term} term, year ${year}, study_year ${study_year} already exists`
       );
     }
-    const students = await Student.find({ study_year, year, term }).sort({
+    let students = await Student.find({ study_year, year, term }).sort({
       studentId: -1,
     });
     if (!students || students.length == 0) {
@@ -70,7 +70,8 @@ export const createPlacement = async (req, res) => {
         `No students in the ${term} term, year ${year}, study_year ${study_year}`
       );
     }
-
+    students = students.filter((student) => student.isFlagged === false);
+    console.log("Studentrec", students);
     const studentIds = students.map((student) => student._id);
 
     const placementLocations = await PlacementLocation.find({

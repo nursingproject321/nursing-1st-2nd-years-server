@@ -16,13 +16,16 @@ export const getStudents = async (req, res) => {
       findParams.study_year = study_year;
     }
 
-    const Studentrec = await Student.find(findParams)
+    let Studentrec = await Student.find(findParams)
       .sort({ createdAt: -1 })
       .limit(limit)
       .skip(start)
-      .populate("placementLocationsHistory", "placementsHistory");
+      .populate("placementLocationsHistory")
+      .populate("placementsHistory");
+
     // .populate("school");
 
+    console.log(Studentrec);
     const totalCount = await Student.find(findParams).count();
 
     return res.status(200).json({
