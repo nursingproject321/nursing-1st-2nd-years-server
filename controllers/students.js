@@ -104,9 +104,7 @@ export const importStudents = async (req, res) => {
           } else {
             student.joined_term = student.term;
             student.joined_year = student.year;
-            console.log("====================================");
-            console.log(student);
-            console.log("====================================");
+
             await Student.create(student);
           }
         } catch (err) {
